@@ -1,5 +1,5 @@
-let speechb1;
-let charac;
+let speechb1,speechbsharp;
+let charac, sprL, sprR, sprU, sprD;
 let splashbg, level1beg, level1end;
 let stage = 0;
 let p;
@@ -49,9 +49,15 @@ function preload() {
   boss = loadImage("assets/boss.gif");
   boss2 = loadImage("assets/boss2_1.png");
   let activeboss = boss;
-  level1end = loadImage("bgs/level1(end).png");
+  level1end = loadImage("bgs/level1(end).jpg");
+  
   charac = loadImage("assets/charac.gif");
+  sprL = loadImage("assets/sprL.gif");
+  sprR = loadImage("assets/sprR.gif");
+  sprD = loadImage("assets/sprD.gif");
+  
   speechb1 = loadImage("assets/speechbubble1.png");
+  speechbsharp = loadImage("assets/speechbubble2.png");
   level3bg = loadImage("bgs/level3.jpg");
   level3end = loadImage("bgs/level3end.jpg");
   obstacleImg = loadImage("assets/cow.png");
@@ -60,8 +66,8 @@ function preload() {
   form = loadImage("assets/form.png");
   formsigned = loadImage("assets/formsigned.png");
   sign = loadImage("assets/sign.png");
-  level5bg = loadImage("bgs/level5bg.png");
-  level5bgend = loadImage("bgs/level5bgend.png");
+  level5bg = loadImage("bgs/level5bg.jpg");
+  level5bgend = loadImage("bgs/level5bgend.jpg");
   finalbg = loadImage("bgs/Finalbg.gif");
   bgm = loadSound("sound/bgm.mp3");
   winSound = loadSound("sound/winsound.mp3");
@@ -225,19 +231,22 @@ function level1() {
     bubble8.show();
   }
 
-  if (stop === 11) {
+  if (stop === 11 || stop === 12) {
     textSize(30);
     if (name == "") {
       name = window.prompt("What was her son's name (Case sensitive)?").toLowerCase();
     } else {
       if (name === "ravi") {
         image(finalbg, 0, 0, 500, 500);
+        stop = 12;
         textSize(18);
         fill(255);
         text("Refresh to restart", 100, 300);
         textSize(20);
         fill(0);
-        winSound.play();
+        if(stop===11){
+         winSound.play();
+        }
       } else {
         text("WRONG!(It's Ravi)", 200, 300, 255, 0, 0, 0);
         name = window.prompt("What was her son's name? (It's Ravi)").toLowerCase;
@@ -288,14 +297,14 @@ function level2() {
 
     //     print(bubble[0], bubble[1])
 
-    image(speechb1, atkBubbles[i][0], atkBubbles[i][1], 200, 80);
+    image(speechbsharp, atkBubbles[i][0], atkBubbles[i][1], 200, 80);
     fill(0);
     textSize(12);
     text(atkBubbles[i][2], atkBubbles[i][0] + 30, atkBubbles[i][1] + 40);
     atkBubbles[i][0] -= 3;
   }
 
-  image(boss, 50, -50, 800, 800);
+  image(boss, 50, -100, 800, 800);
 
   p.show();
   p.move();
@@ -305,12 +314,10 @@ function level2() {
     if (dist(bullet[0] + 75, bullet[1] + 37, p.x + 60, p.y + 75) < 100) {
       score = 0;
       atkBubbles = [];
-      console.log("ded");
     }
 
     if (bullet[0] < -150) {
       score++;
-      console.log("yay, score:", score);
       atkBubbles.splice(i, 1); // Remove bullet
       i--; // Adjust index because we removed an element
     }
@@ -508,7 +515,7 @@ function level5() {
 function level6() {
   shouldEnter = true;
   clear();
-  background(220);
+  background(255,204,0);
   if (score < 2) {
     fill(128);
     text("SIGN THE FORMS!\nPRESS ENTER TO SIGN!", width / 2, height / 2 - 20);
@@ -576,16 +583,20 @@ class Person {
 
   show() {
     if (this.img) {
-      image(this.img, this.x, this.y, 120, 150);
+      image(this.img, this.x, this.y);
     }
   }
 
   move() {
     if (stop === 0 || stop === 6) {
-      if (keyIsDown(UP_ARROW)) this.y -= speed;
-      if (keyIsDown(DOWN_ARROW)) this.y += speed;
-      if (keyIsDown(LEFT_ARROW)) this.x -= speed;
-      if (keyIsDown(RIGHT_ARROW)) this.x += speed;
+      if (keyIsDown(UP_ARROW)){this.y -= speed;
+                              this.img = charac;}
+      if (keyIsDown(DOWN_ARROW)){this.y += speed;
+                                this.img = sprD;}
+      if (keyIsDown(LEFT_ARROW)){this.x -= speed;
+                                this.img = sprL;}
+      if (keyIsDown(RIGHT_ARROW)){this.x += speed;
+                                  this.img = sprR;}
     }
 
     // Keep character inside canvas
